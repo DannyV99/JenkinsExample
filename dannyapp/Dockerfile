@@ -1,13 +1,17 @@
-FROM node
+# The Node version that we'll be running for our version of React.
+# You may have to search the Node directory for a version that fits
+# the version of React you're using.
+FROM node:8.9-alpine
 
-RUN mkdir /usr/src/app
+# Create a work directory and copy over our dependency manifest files.
+RUN mkdir /app
+WORKDIR /app
+COPY /src /app/src
+COPY ["package.json", "package-lock.json*", "./"]
 
-COPY . /usr/src/app
+# If you're using yarn:
+#  yarn build
+RUN npm install --production --silent && mv node_modules ../
 
-WORKDIR /usr/src/app
-
-ENV PATH /usr.src/app/node_modules/.bin:$PATH
-
-RUN yarn
-
-CMD ["npm", "start"]
+# Expose PORT 3000 on our virtual machine so we can run our server
+EXPOSE 3000
